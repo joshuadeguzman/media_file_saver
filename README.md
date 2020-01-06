@@ -1,14 +1,45 @@
 ## media_file_saver
 
-A new flutter plugin project.
+🖼️ A plugin for saving images and other media files in the device's pictures directory (Android) or photo library (iOS).
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+- Simplified image and media file download
+- Supports PNG, JPG, JPEG, GIF, MP3 and more
+- Implements native permission (Android) and authorization requests (iOS)
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Installation
+
+Add it to your pubspec.yaml file
+```
+dependencies:
+   media_file_saver: ^0.0.2
+```
+
+Install it
+
+```
+pub get
+```
+
+Import it
+
+```
+import 'package:media_file_saver/media_file_saver.dart;
+```
+
+## Usage
+
+Eg. Saving image from cache
+
+```dart
+// Getting the cached image
+final file = await DefaultCacheManager().getSingleFile("https//example.com/profile-picture.png");
+
+// Downloading the image file to your photo library
+await MediaFileSaver.saveImage(file.readAsBytes());
+```
+
+## License
+
+MIT [@joshuadeguzman](https://github.com/joshuadeguzman/media_file_saver)
