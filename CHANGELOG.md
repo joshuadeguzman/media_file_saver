@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Update min Android Studio / Gradle Support
+
 ## 0.0.2
 
 * Add native permission/authorization requests implementation in the plugin code.
