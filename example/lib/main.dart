@@ -1,56 +1,81 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:dio/dio.dart';
 import 'package:media_file_saver/media_file_saver.dart';
+import 'dart:typed_data';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'media_file_helper_example',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+class MyHomePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _MyHomePageState();
+  }
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final _imgUrl =
+      "https://upload.wikimedia.org/wikipedia/commons/1/17/Google-flutter-logo.png";
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await MediaFileSaver.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    PermissionHandler().requestPermissions(<PermissionGroup>[
+      PermissionGroup.storage,
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("MediaFileSaver Example"),
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            Image.network(
+              _imgUrl,
+              height: 200,
+              width: 200,
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 15),
+              child: RaisedButton(
+                onPressed: _saveGoogleImage,
+                child: Text("Download Image"),
+              ),
+              width: 200,
+              height: 56,
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  _saveGoogleImage() async {
+    var response = await Dio().get(
+      _imgUrl,
+      options: Options(responseType: ResponseType.bytes),
+    );
+    final result = await MediaFileSaver.saveImage(
+      Uint8List.fromList(response.data),
+    );
+    print("Saved path: $result");
   }
 }
