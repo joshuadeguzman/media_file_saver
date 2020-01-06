@@ -1,3 +1,3 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Initial working saving of images, and other media files to the Gallery for both iOS and Android.
