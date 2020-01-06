@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:media_file_saver/media_file_saver.dart';
 import 'dart:typed_data';
@@ -30,14 +29,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _imgUrl =
       "https://upload.wikimedia.org/wikipedia/commons/1/17/Google-flutter-logo.png";
-
-  @override
-  void initState() {
-    super.initState();
-    PermissionHandler().requestPermissions(<PermissionGroup>[
-      PermissionGroup.storage,
-    ]);
-  }
 
   @override
   Widget build(BuildContext context) {
