@@ -84,7 +84,7 @@ class MediaFileSaverPlugin(
             // Request permission
             ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_EXTERNAL_STORAGE_IMAGE)
         } else {
-            saveImage(bitmap)
+            return saveImage(bitmap)
         }
         return "Cannot continue saving the image."
     }
