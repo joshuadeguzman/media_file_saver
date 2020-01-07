@@ -13,7 +13,7 @@
 Add it to your pubspec.yaml file
 ```
 dependencies:
-   media_file_saver: ^0.0.2
+   media_file_saver: <PLUGIN_VERSION>
 ```
 
 Install it
