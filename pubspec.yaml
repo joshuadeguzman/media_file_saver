@@ -1,6 +1,6 @@
 name: media_file_saver
 description: A plugin for saving images and other media files in the device's pictures directory (Android) or photo library (iOS).
-version: 0.0.3
+version: 0.0.4
 authors:
   - Joshua de Guzman <jdeguzman@freelancer.com>
 homepage: "https://github.com/joshuadeguzman/media_file_saver"

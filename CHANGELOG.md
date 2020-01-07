@@ -1,3 +1,8 @@
+## 0.0.4
+
+* [#5](https://github.com/joshuadeguzman/media_file_saver/pull/5) Migrate to the latest plugin API
+* [#3](https://github.com/joshuadeguzman/media_file_saver/issues/3) Fix missing return statement 
+
 ## 0.0.3
 
 * Update min Android Studio / Gradle Support
