@@ -64,9 +64,15 @@ class _MyHomePageState extends State<MyHomePage> {
       _imgUrl,
       options: Options(responseType: ResponseType.bytes),
     );
-    final result = await MediaFileSaver.saveImage(
+
+    bool result = await MediaFileSaver.saveImage(
       Uint8List.fromList(response.data),
     );
-    print("Saved path: $result");
+
+    if (result) {
+      print("Saved image");
+    } else {
+      print("Failed to save image");
+    }
   }
 }
