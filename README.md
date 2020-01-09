@@ -42,4 +42,4 @@ await MediaFileSaver.saveImage(file.readAsBytes());
 
 ## License
 
-MIT [@joshuadeguzman](https://github.com/joshuadeguzman/media_file_saver)
+BSD [@joshuadeguzman](https://github.com/joshuadeguzman/media_file_saver)
