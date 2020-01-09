@@ -3,43 +3,45 @@ import UIKit
 import Photos
 
 public class SwiftMediaFileSaverPlugin: NSObject, FlutterPlugin {
-    var result: FlutterResult?;
-    var isAuthorized: Bool = false
-
+    
+    private var result: FlutterResult?
+        
     public static func register(with registrar: FlutterPluginRegistrar) {
-      let channel = FlutterMethodChannel(name: "com.freelancer.flutter.plugins/media_file_saver", binaryMessenger: registrar.messenger())
-      let instance = SwiftMediaFileSaverPlugin()
-      registrar.addMethodCallDelegate(instance, channel: channel)
+        let channel = FlutterMethodChannel(name: "com.freelancer.flutter.plugins/media_file_saver", binaryMessenger: registrar.messenger())
+        registrar.addMethodCallDelegate(SwiftMediaFileSaverPlugin(), channel: channel)
     }
-
+    
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-      self.result = result
-      if call.method == "saveImage" {
-        self.checkAuthorization()
-        if (self.isAuthorized) {
-          guard let imageData = (call.arguments as? FlutterStandardTypedData)?.data, let image = UIImage(data: imageData) else { return }
-          // TODO: Add MethodChannel to handle callbacks and errors and return show it to users (if deemed necessary).
-          UIImageWriteToSavedPhotosAlbum(image, self, nil, nil)
-        }
-      } else if (call.method == "saveFile") {
-        self.checkAuthorization()
-        if (self.isAuthorized) {
-           guard let path = call.arguments as? String else { return }
-            if (isImageFile(filename: path)) {
-                if let image = UIImage(contentsOfFile: path) {
-                    // TODO: Add MethodChannel to handle callbacks and errors and return show it to users (if deemed necessary).
-                    UIImageWriteToSavedPhotosAlbum(image, self, nil, nil)
+        
+        self.result = result
+        
+        checkAuthorization { [weak self] isAuthorized in
+            guard let self = self, isAuthorized else {
+                result(false)
+                return
+            }
+            
+            switch call.method {
+            case "saveImage":
+                guard let imageData = (call.arguments as? FlutterStandardTypedData)?.data, let image = UIImage(data:imageData) else {
+                    result(false)
+                    return
                 }
-            } else {
-                if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path)) {
-                    // TODO: Add MethodChannel to handle callbacks and errors and return show it to users (if deemed necessary).
-                    UISaveVideoAtPathToSavedPhotosAlbum(path, self, nil, nil)
+                
+                self.saveImage(image)
+            
+            case "saveFile":
+                guard let path = call.arguments as? String else {
+                    result(false)
+                    return
                 }
+                
+                self.saveFile(path)
+                
+            default:
+                result(FlutterMethodNotImplemented)
             }
         }
-      } else {
-        result(FlutterMethodNotImplemented)
-      }
     }
     
     // TODO: Check the the file type programmatically via Data <> FlutterStandardTypedData from the byte stream.
@@ -53,22 +55,40 @@ public class SwiftMediaFileSaverPlugin: NSObject, FlutterPlugin {
             || filename.hasSuffix(".gif")
             || filename.hasSuffix(".GIF")
     }
-
-    func checkAuthorization() {
-      let status = PHPhotoLibrary.authorizationStatus()
-      if status == .notDetermined {
-        PHPhotoLibrary.requestAuthorization({ status in
-          if status == .authorized {
-            self.isAuthorized = true
-          } else {
-            self.isAuthorized = false
-            // TODO: Add a channel to handle the undetermined status of the authorization
-          }
-        })
-      } else if status == .denied || status == .restricted {
-        self.isAuthorized = false
-      } else {
-        self.isAuthorized = true
-      }
+    
+    func checkAuthorization(_ completed: @escaping (Bool) -> Void) {
+        
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization({ status in
+                completed(status == .authorized)
+            })
+        case .denied, .restricted:
+            completed(false)
+        default:
+            completed(true)
+        }
+    }
+    
+    private func saveImage(_ image: UIImage) {
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+    
+    private func saveFile(_ path: String) {
+        if isImageFile(filename: path), let image = UIImage(contentsOfFile: path) {
+            UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+            
+        } else if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path) {
+            UISaveVideoAtPathToSavedPhotosAlbum(path, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+        }
+    }
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            print("Failed to save image - \(error.localizedDescription)")
+            result?(false)
+        } else {
+           result?(true)
+        }
     }
 }
