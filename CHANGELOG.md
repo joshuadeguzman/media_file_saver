@@ -1,3 +1,6 @@
+## 0.1.0
+* [#6](https://github.com/joshuadeguzman/media_file_saver/pull/6) Fixed authorisation issue for iOS
+
 ## 0.0.4
 
 * [#5](https://github.com/joshuadeguzman/media_file_saver/pull/5) Migrate to the latest plugin API
