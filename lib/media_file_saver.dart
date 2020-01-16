@@ -4,7 +4,8 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 
 class MediaFileSaver {
-  static const MethodChannel _channel = const MethodChannel('com.freelancer.flutter.plugins/media_file_saver');
+  static const MethodChannel _channel =
+      const MethodChannel('com.freelancer.flutter.plugins/media_file_saver');
 
   static Future saveImage(Uint8List imageBytes) async {
     assert(imageBytes != null);
