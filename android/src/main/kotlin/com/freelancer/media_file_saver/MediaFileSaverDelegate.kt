@@ -104,7 +104,6 @@ class MediaFileSaverDelegate(
         }
     }
 
-
     private fun saveFile(filePath: String): String {
         return try {
             val tempFile = File(filePath)
