@@ -1,3 +1,6 @@
+## 0.1.1
+* [#8](https://github.com/joshuadeguzman/media_file_saver/pull/8) Fix ktlint issue and run flutter format on the lib dart file
+
 ## 0.1.0
 * [#6](https://github.com/joshuadeguzman/media_file_saver/pull/6) Fixed authorisation issue for iOS
 
